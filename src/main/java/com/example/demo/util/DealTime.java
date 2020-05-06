@@ -64,8 +64,8 @@ public class DealTime {
      * @param t
      * @return
      */
-    public static String InteToStringTime(long t){
-        if (t==0){
+    public static String InteToStringTime(Long t){
+        if (ObjectUtils.isEmpty(t)){
             return null;
         }
         SimpleDateFormat sdf1=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
