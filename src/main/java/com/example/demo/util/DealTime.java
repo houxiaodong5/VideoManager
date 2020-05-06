@@ -11,6 +11,9 @@ package com.example.demo.util;
  * @Version: 1.0
  */
 
+import com.mchange.lang.LongUtils;
+import org.apache.commons.lang3.ObjectUtils;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -71,7 +74,8 @@ public class DealTime {
     }
     public static Date InteToDateTime(Long t){
         Date parse = null;
-        if(t==0L || t==null){
+        if(ObjectUtils.isEmpty(t)){
+            System.err.println("==");
             return null;
         }
         try {
@@ -86,7 +90,8 @@ public class DealTime {
 
     public static void main(String[] args) {
         //  1585107267188L
-        Date s = InteToDateTime(new Date().getTime());
+        Long a=null;
+        Date s = InteToDateTime(a);
         System.err.println(s);
     }
 }
