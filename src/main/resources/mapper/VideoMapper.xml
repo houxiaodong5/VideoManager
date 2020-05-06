@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.dao.VideoMapper">
+
+
+    <!--修改录像时间信息-->
+  <update id="updateLXsjxx" parameterType="com.example.demo.entity.Lxsjxx">
+    update t_hjjxl_yspsjcj_lxsjxx
+    <set>
+      <if test="zxlxsj != null">
+          zxlxsj = #{zxlxsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="zdlxsj != null">
+          zdlxsj = #{zdlxsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="zt != null">
+        zt = #{zt,jdbcType=INTEGER},
+      </if>
+      <if test="taskId != null">
+        taskId = #{taskId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where SPSBBH = #{spsbbh,jdbcType=VARCHAR}
+  </update>
+
+    <!--根据条件查询事件标签数据列表-->
+    <select id="selectSJbqInfo" parameterType="com.example.demo.entity.Sjbqxx" resultType="com.example.demo.entity.Sjbqxx">
+        SELECT sjid,sjly,sjlxdm,sjkssj,sjjssj,czlx,jksxjbh,sjyh,czyh,jqmc FROM t_hjjxl_yspsjcj_sjbqxx WHERE 1=1
+        <if test="czlx != null and czlx !=''">
+            AND CZLX=#{czlx,jdbcType=VARCHAR}
+        </if>
+        <if test="jqmc != null and jqmc !=''">
+            AND JQMC=#{jqmc,jdbcType=VARCHAR}
+        </if>
+        <if test="czyh != null and czyh !=''">
+            AND CZYH=#{czyh,jdbcType=VARCHAR}
+        </if>
+        <if test="jksxjbh != null and jksxjbh !=''">
+            AND JKSXJBH=#{jksxjbh,jdbcType=VARCHAR}
+        </if>
+        <if test="sjlxdm != null and sjlxdm !=''">
+            AND SJLXDM=#{sjlxdm,jdbcType=VARCHAR}
+        </if>
+        <if test="sjly != null and sjly !=''">
+            AND SJLY=#{sjly,jdbcType=VARCHAR}
+        </if>
+        <if test="sjid != null and sjid !=''">
+            AND SJID=#{sjid,jdbcType=VARCHAR}
+        </if>
+        ORDER BY SJID LIMIT #{pageNum,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
+    </select>
+
+    <!--根据条件查询事件标签的数据条数-->
+    <select id="selectSJbqCount" parameterType="com.example.demo.entity.Sjbqxx" resultType="java.lang.Integer">
+        SELECT COUNT(SJID) FROM t_hjjxl_yspsjcj_sjbqxx WHERE 1=1
+        <if test="czlx != null and czlx !=''">
+            AND CZLX=#{czlx,jdbcType=VARCHAR}
+        </if>
+        <if test="jqmc != null and jqmc !=''">
+            AND JQMC=#{jqmc,jdbcType=VARCHAR}
+        </if>
+        <if test="czyh != null and czyh !=''">
+            AND CZYH=#{czyh,jdbcType=VARCHAR}
+        </if>
+        <if test="jksxjbh != null and jksxjbh !=''">
+            AND JKSXJBH=#{jksxjbh,jdbcType=VARCHAR}
+        </if>
+        <if test="sjlxdm != null and sjlxdm !=''">
+            AND SJLXDM=#{sjlxdm,jdbcType=VARCHAR}
+        </if>
+        <if test="sjly != null and sjly !=''">
+            AND SJLY=#{sjly,jdbcType=VARCHAR}
+        </if>
+        <if test="sjid != null and sjid !=''">
+            AND SJID=#{sjid,jdbcType=VARCHAR}
+        </if>
+    </select>
+
+    <!--查询定时任务间隔时间-->
+    <select id="selectScheduledCs" parameterType="java.lang.String" resultType="java.lang.String">
+        SELECT XTYXCSZ FROM t_hjjxl_yspsjcj_xtyxcspz WHERE XTYXCSBS=#{xtyxcsbs,jdbcType=VARCHAR}
+    </select>
+
+    <!--添加事件-->
+    <insert id="insertSj" parameterType="com.example.demo.entity.Sjbqxx">
+        INSERT INTO t_hjjxl_yspsjcj_sjbqxx (SJID,SJLY,SJLXDM,SJKSSJ,JQMC,CZYH,SJJSSJ)
+        VALUES (#{sjid,jdbcType=VARCHAR},#{sjly,jdbcType=VARCHAR},#{sjlxdm,jdbcType=VARCHAR},
+        #{sjkssj,jdbcType=TIMESTAMP},#{jqmc,jdbcType=VARCHAR},
+        #{czyh,jdbcType=VARCHAR},#{sjjssj,jdbcType=TIMESTAMP})
+    </insert>
+
+    <!--添加录像关联信息表-->
+    <insert id="insertLxglxx" parameterType="com.example.demo.entity.Lxglxx">
+        INSERT INTO t_hjjxl_yspsjcj_lxglxx (sjid,spsbbh,kssj,jssj,lxzt,lxrwbh)
+        VALUES (#{sjid,jdbcType=VARCHAR},#{spsbbh,jdbcType=VARCHAR},#{kssj,jdbcType=TIMESTAMP},#{jssj,jdbcType=TIMESTAMP},#{lxzt,jdbcType=INTEGER},#{lxrwbh,jdbcType=VARCHAR})
+    </insert>
+
+    <!--根据视频设备编号修改录像管理信息表的状态和任务编号-->
+    <update id="updateLXglxxBySBBH" parameterType="com.example.demo.entity.Lxglxx">
+        UPDATE t_hjjxl_yspsjcj_lxglxx SET lxzt=#{lxzt,jdbcType=INTEGER},lxrwbh=#{lxrwbh,jdbcType=VARCHAR} WHERE spsbbh=#{spsbbh,jdbcType=VARCHAR}
+    </update>
+
+    <!--添加录像时间信息表-->
+    <insert id="insertLxsjxx" parameterType="com.example.demo.entity.Lxsjxx">
+        INSERT INTO t_hjjxl_yspsjcj_lxsjxx (zxlxsj,zdlxsj,zt,SPSBBH,taskId) VALUES (#{zxlxsj,jdbcType=TIMESTAMP},#{zdlxsj,jdbcType=TIMESTAMP},#{zt,jdbcType=INTEGER},#{spsbbh,jdbcType=VARCHAR},#{taskId,jdbcType=VARCHAR})
+    </insert>
+
+    <!--根据摄像机编号删除录像时间信息表-->
+    <delete id="deleteLxsjxx" parameterType="java.lang.String">
+        DELETE FROM t_hjjxl_yspsjcj_lxsjxx WHERE SPSBBH=#{spsbbh,jdbcType=VARCHAR}
+    </delete>
+
+    <!--根据摄像机状态查询摄像机信息-->
+    <select id="selectLxsjxx" parameterType="java.lang.Integer" resultType="com.example.demo.entity.Lxsjxx">
+        SELECT spsbbh,zxlxsj,zdlxsj,zt,taskId FROM t_hjjxl_yspsjcj_lxsjxx WHERE zt=#{zt,jdbcType=INTEGER}
+    </select>
+
+    <!--添加外部操作日志信息-->
+    <insert id="insertWbczrzxx" parameterType="com.example.demo.entity.Wbczrzxx">
+        INSERT INTO t_hjjxl_yspsjcj_wbczrzxx (rzlx,czjk,czlx,xtbh,jqmc,yhzh,czsj,xysj) VALUES
+         (#{rzlx,jdbcType=VARCHAR},#{czjk,jdbcType=VARCHAR},#{czlx,jdbcType=VARCHAR},#{xtbh,jdbcType=VARCHAR},#{jqmc,jdbcType=VARCHAR},#{yhzh,jdbcType=VARCHAR},#{czsj,jdbcType=TIMESTAMP},#{xysj,jdbcType=TIMESTAMP})
+    </insert>
+
+    <!--修改事件标签信息-->
+    <update id="updateSj" parameterType="com.example.demo.entity.Sjbqxx">
+        update t_hjjxl_yspsjcj_sjbqxx
+        <set>
+            <if test="sjly != null and sjly !=''">
+                sjly = #{sjly,jdbcType=VARCHAR},
+            </if>
+            <if test="sjlxdm != null and zdlxsj !=''">
+                zdlxsj = #{zdlxsj,jdbcType=VARCHAR},
+            </if>
+            <if test="sjkssj != null">
+                sjkssj = #{sjkssj,jdbcType=TIMESTAMP},
+            </if>
+            <if test="sjjssj != null">
+                sjjssj = #{sjjssj,jdbcType=TIMESTAMP},
+            </if>
+            <if test="czlx != null and czlx !=''">
+                czlx = #{czlx,jdbcType=VARCHAR},
+            </if>
+            <if test="jksxjbh != null and jksxjbh !=''">
+                jksxjbh = #{jksxjbh,jdbcType=VARCHAR},
+            </if>
+            <if test="sjyh != null and sjyh !=''">
+                sjyh = #{sjyh,jdbcType=VARCHAR},
+            </if>
+            <if test="czyh != null and czyh !=''">
+                czyh = #{czyh,jdbcType=VARCHAR},
+            </if>
+            <if test="jqmc != null and jqmc !=''">
+                jqmc = #{jqmc,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where sjid = #{sjid,jdbcType=VARCHAR}
+    </update>
+</mapper>
