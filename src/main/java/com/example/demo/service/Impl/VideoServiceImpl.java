@@ -16,6 +16,7 @@ import com.example.demo.vo.StopVideoVo;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -665,7 +666,19 @@ public class VideoServiceImpl implements VideoService {
         return flag;
     }
 
-    public static void main(String[] args) {
-        System.err.println(new Date().getTime());
+
+    /**
+     * 每天下午6点执行一次
+     */
+    @Scheduled(cron = "0 0 18 * * ?")
+    public void taskJCSJ(){
+        String jgsj = videoMapper.selectScheduledCs("videorefreshtime");
+        String taskCron = CronUtil.getCron(Integer.parseInt(jgsj));
+        if(!taskCron.equals(cron)){//如果定时时间变化则重启定时任务线程
+            runableContro.stopCron1();//结束定时扫描未进行摄像的摄像机线程
+            runableContro.stopCron2();//结束定时扫描已进行摄像的摄像机线程
+            runableContro.startCron1(taskCron);//开启定时扫描未进行摄像的摄像机线程
+            runableContro.startCron2(taskCron);//开启定时扫描已进行摄像的摄像机线程
+        }
     }
 }
